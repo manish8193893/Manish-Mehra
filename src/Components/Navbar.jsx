@@ -15,58 +15,113 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // prevent background scroll when mobile menu is open
+    document.body.style.overflow = isMobileMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
+    // close mobile menu on Escape
+    const handleKey = (e) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    if (isMobileMenuOpen) window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isMobileMenuOpen]);
+
+  const navBgClasses = isScrolled
+    ? 'bg-crypto-blue/80 backdrop-blur-md py-3 shadow-lg'
+    : 'py-6';
+
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-crypto-blue/80 backdrop-blur-md py-3 shadow-lg' : 'py-6'}`}>
+    <nav
+      aria-label="Primary"
+      className={`fixed w-full z-50 transition-all duration-300 ${navBgClasses}`}
+    >
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/">
-            <img src="logo.png" width={88} height={25} alt="logo" />
+          <Link to="/" aria-label="Home">
+            <img src="logo.png" width={88} height={25} alt="Manish Mehra logo" />
           </Link>
         </div>
 
-        
         <ul className="hidden lg:flex items-center space-x-8">
           <li>
-            <a href="/" className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors">
+            <Link
+              to="/"
+              className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors hover:text-white"
+            >
               Home
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/about" className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors">
+            <Link
+              to="/about"
+              className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors hover:text-white"
+            >
               About
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/projects" className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors">
+            <Link
+              to="/projects"
+              className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors hover:text-white"
+            >
               Projects
-            </a>
+            </Link>
           </li>
           <li>
-            <a href="/resume" className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors">
+            <Link
+              to="/resume"
+              className="text-gray-300 py-2 px-3 navbar-border rounded-md transition-colors hover:text-white"
+            >
               Resume
-            </a>
+            </Link>
           </li>
         </ul>
 
         <div className="hidden lg:flex items-center space-x-4 px-5">
           <ul className="flex items-center space-x-2">
-            <li className='p-2 border-gray-700 hover:bg-white/20 rounded-md'>
-              <a className="text-gray-300 transition-colors rounded-md border-b-2 border-transparent hover:border-white pb-1" href="tel:+918742970516">
+            <li className="p-2 hover:bg-white/10 rounded-md">
+              <a
+                className="text-gray-300 transition-colors rounded-md flex items-center"
+                href="tel:+918742970516"
+                aria-label="Call"
+              >
                 <Phone />
               </a>
             </li>
-            <li className='p-2 border-gray-700 hover:bg-white/20 rounded-md'>
-              <a className="text-gray-300 transition-colors rounded-md border-b-2 border-transparent hover:border-white pb-1" href="mailto:manish8193892@gmail.com">
+            <li className="p-2 hover:bg-white/10 rounded-md">
+              <a
+                className="text-gray-300 transition-colors rounded-md flex items-center"
+                href="mailto:manish8193892@gmail.com"
+                aria-label="Email"
+              >
                 <Mail />
               </a>
             </li>
-            <li className='p-2 border-gray-700 hover:bg-white/20 rounded-md'>
-              <a className="text-gray-300 transition-colors rounded-md border-b-2 border-transparent hover:border-white pb-1" href="https://wa.me/+918742970516">
+            <li className="p-2 hover:bg-white/10 rounded-md">
+              <a
+                className="text-gray-300 transition-colors rounded-md flex items-center"
+                href="https://wa.me/+918742970516"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+              >
                 <MessagesSquare />
               </a>
             </li>
-            <li className='p-2 border-gray-700 hover:bg-white/20 rounded-md'>
-              <a className="text-gray-300 transition-colors rounded-md border-b-2 border-transparent hover:border-white pb-1" href="https://github.com/manish8193893">
+            <li className="p-2 hover:bg-white/10 rounded-md">
+              <a
+                className="text-gray-300 transition-colors rounded-md flex items-center"
+                href="https://github.com/manish8193893"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
                 <Github />
               </a>
             </li>
@@ -74,7 +129,12 @@ const Navbar = () => {
         </div>
 
         {/* Mobile menu button */}
-        <button className="lg:hidden text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        <button
+          className="lg:hidden text-white p-2 rounded-md hover:bg-white/10"
+          onClick={() => setIsMobileMenuOpen((s) => !s)}
+          aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMobileMenuOpen}
+        >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -85,46 +145,75 @@ const Navbar = () => {
           <div className="container mx-auto px-4">
             <ul className="flex flex-col space-y-4">
               <li>
-                <a href="#features" className="text-gray-300 hover:text-white transition-colors block " onClick={() => setIsMobileMenuOpen(false)}>
+                <Link
+                  to="/"
+                  className="text-gray-300 hover:text-white transition-colors block"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   Home
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors block " onClick={() => setIsMobileMenuOpen(false)}>
+                <Link
+                  to="/about"
+                  className="text-gray-300 hover:text-white transition-colors block"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#testimonials" className="text-gray-300 hover:text-white transition-colors block " onClick={() => setIsMobileMenuOpen(false)}>
+                <Link
+                  to="/projects"
+                  className="text-gray-300 hover:text-white transition-colors block"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   Projects
-                </a>
+                </Link>
               </li>
-              <li className='border-b-2 border-gray-700'>
-                <a href="#pricing" className="text-gray-300 hover:text-white transition-colors block pb-2" onClick={() => setIsMobileMenuOpen(false)}>
+              <li className="border-b-2 border-gray-700">
+                <Link
+                  to="/resume"
+                  className="text-gray-300 hover:text-white transition-colors block pb-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
                   Resume
-                </a>
+                </Link>
               </li>
-              <li className="flex flex-row">
-                <Link className='p-2 mr-2 border-gray-700 hover:bg-white/20 rounded-md' to="tel:+918742970516">
-                  <a className="text-gray-300 transition-colors rounded-md">
-                    <Phone />
-                  </a>
-                </Link>
-                <Link className='p-2 mx-2 border-gray-700 hover:bg-white/20 rounded-md' to="mailto:manish8193892@gmail.com">
-                  <a className="text-gray-300 transition-colors rounded-md">
-                    <Mail />
-                  </a>
-                </Link>
-                <Link className='p-2 mx-2 border-gray-700 hover:bg-white/20 rounded-md' to="https://wa.me/+918742970516">
-                  <a className="text-gray-300 transition-colors rounded-md">
-                    <MessagesSquare />
-                  </a>
-                </Link>
-                <Link className='p-2 mx-2 border-gray-700 hover:bg-white/20 rounded-md' to="https://github.com/manish8193893">
-                  <a className="text-gray-300 transition-colors rounded-md">
-                    <Github />
-                  </a>
-                </Link>
+
+              <li className="flex flex-row space-x-2">
+                <a
+                  className="p-2 border-gray-700 hover:bg-white/10 rounded-md text-gray-300 flex items-center"
+                  href="tel:+918742970516"
+                  aria-label="Call"
+                >
+                  <Phone />
+                </a>
+                <a
+                  className="p-2 border-gray-700 hover:bg-white/10 rounded-md text-gray-300 flex items-center"
+                  href="mailto:manish8193892@gmail.com"
+                  aria-label="Email"
+                >
+                  <Mail />
+                </a>
+                <a
+                  className="p-2 border-gray-700 hover:bg-white/10 rounded-md text-gray-300 flex items-center"
+                  href="https://wa.me/+918742970516"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="WhatsApp"
+                >
+                  <MessagesSquare />
+                </a>
+                <a
+                  className="p-2 border-gray-700 hover:bg-white/10 rounded-md text-gray-300 flex items-center"
+                  href="https://github.com/manish8193893"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <Github />
+                </a>
               </li>
             </ul>
           </div>
